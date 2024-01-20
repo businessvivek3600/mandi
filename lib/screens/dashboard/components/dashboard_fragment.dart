@@ -130,7 +130,7 @@ class _DashboardFragmentState extends State<DashboardFragment>
         crossAxisCount: 2,
         crossAxisSpacing: DEFAULT_PADDING,
         mainAxisSpacing: DEFAULT_PADDING,
-        childAspectRatio: 0.9,
+        childAspectRatio: 1,
       ),
       itemBuilder: (context, index) {
         Game game = dashboardStore.gamesList[index];
@@ -159,10 +159,8 @@ class _DashboardFragmentState extends State<DashboardFragment>
                       ///today
                       Column(
                         children: [
-                          Text(
-                            'Today',
-                            style: boldTextStyle(color: Colors.black87),
-                          ),
+                          Text('Today',
+                              style: boldTextStyle(color: Colors.black87)),
                           1.height,
                           Text(
                             '${game.today.validate()}',
@@ -174,10 +172,8 @@ class _DashboardFragmentState extends State<DashboardFragment>
                       ///yesterday
                       Column(
                         children: [
-                          Text(
-                            'Yesterday',
-                            style: boldTextStyle(color: Colors.black87),
-                          ),
+                          Text('Yesterday',
+                              style: boldTextStyle(color: Colors.black87)),
                           1.height,
                           Text(
                             '${game.yesterday.validate()}',
@@ -198,17 +194,21 @@ class _DashboardFragmentState extends State<DashboardFragment>
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.3),
                   borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(DEFAULT_RADIUS * 2),
-                  ),
+                      bottom: Radius.circular(DEFAULT_RADIUS * 2)),
                 ),
-                padding: const EdgeInsets.all(DEFAULT_PADDING),
+                padding: const EdgeInsets.all(DEFAULT_PADDING / 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(
-                        'Daily: ${game.timing.validate()}',
-                        style: boldTextStyle(color: Colors.black87),
+                      child: Wrap(
+                        spacing: 5,
+                        children: [
+                          Text('Daily:',
+                              style: boldTextStyle(color: Colors.black87)),
+                          Text(game.timing.validate(),
+                              style: boldTextStyle(color: Colors.black87)),
+                        ],
                       ),
                     ),
                     10.width,
