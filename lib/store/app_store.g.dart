@@ -847,7 +847,7 @@ mixin _$AppStore on _AppStore, Store {
       AsyncAction('_AppStore.setUserEmail', context: context);
 
   @override
-  Future<void> setUserEmail(String val, {bool isInitializing = false}) {
+  Future<void> setUserEmail(String? val, {bool isInitializing = false}) {
     return _$setUserEmailAsyncAction
         .run(() => super.setUserEmail(val, isInitializing: isInitializing));
   }
