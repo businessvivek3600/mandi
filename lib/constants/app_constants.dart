@@ -7,9 +7,9 @@ class AppConst {
   static const tag = 'AppConst';
   static String appName = "NPL Mandi";
   static const String appVersion = "1.0.0";
-  static const String packageName = "mandi.qbn.biz";
-  static const String appStoreId = "mandi.qbn.biz/id0000000000";
-  static String appDescription = "Sata King";
+  static const String packageName = "com.npl.mandi";
+  static const String appStoreId = "com.npl.mandi/id0000000000";
+  static String appDescription = "The latest result of mandi";
   static const String appIcon = "assets/images/logo-no-background.png";
 
   ///pusher details

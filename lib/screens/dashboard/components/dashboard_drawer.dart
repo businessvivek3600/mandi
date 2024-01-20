@@ -231,73 +231,77 @@ class _DashboardDrawerState extends State<DashboardDrawer> {
         ),
 
         ///invite friends
-        bottomNavigationBar: Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(
-                  top: DEFAULT_PADDING * 3,
-                  left: DEFAULT_PADDING,
-                  right: DEFAULT_PADDING,
-                  bottom: DEFAULT_PADDING),
-              padding: const EdgeInsets.all(DEFAULT_PADDING),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
-                color: context.accentColor.withOpacity(0.5),
+        // bottomNavigationBar: footer(context).onTap(() {
+        //   // context.pushNamed(Routes.referAndEarn);
+        //   print('refer and earn');
+        // }),
+      ),
+    );
+  }
+
+  Stack footer(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(
+              top: DEFAULT_PADDING * 3,
+              left: DEFAULT_PADDING,
+              right: DEFAULT_PADDING,
+              bottom: DEFAULT_PADDING),
+          padding: const EdgeInsets.all(DEFAULT_PADDING),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
+            color: context.accentColor.withOpacity(0.5),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              (DEFAULT_PADDING * 2).toInt().height,
+              Text(
+                'Invite People and Earn',
+                textAlign: TextAlign.center,
+                style: boldTextStyle(
+                    size: (APP_BAR_TEXT_SIZE).toInt(), color: Colors.white),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              Row(
                 children: [
-                  (DEFAULT_PADDING * 2).toInt().height,
-                  Text(
-                    'Invite People and Earn',
-                    textAlign: TextAlign.center,
-                    style: boldTextStyle(
-                        size: (APP_BAR_TEXT_SIZE).toInt(), color: Colors.white),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton.icon(
-                          onPressed: () {
-                            AppShare.shareApp(
-                              list: dashboardStore.gamesList
-                                  .map((e) => e.title.validate())
-                                  .toList(),
-                            );
-                          },
-                          icon: const FaIcon(FontAwesomeIcons.shareNodes,
-                                  color: Colors.indigo)
-                              .paddingRight(DEFAULT_PADDING),
-                          label: Text(
-                            'Invite People',
-                            style: TextStyle(
-                                fontSize: APP_BAR_TEXT_SIZE.toDouble(),
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                  Expanded(
+                    child: TextButton.icon(
+                      onPressed: () {
+                        AppShare.shareApp(
+                          list: dashboardStore.gamesList
+                              .map((e) => e.title.validate())
+                              .toList(),
+                        );
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.shareNodes,
+                              color: Colors.indigo)
+                          .paddingRight(DEFAULT_PADDING),
+                      label: Text(
+                        'Invite People',
+                        style: TextStyle(
+                            fontSize: APP_BAR_TEXT_SIZE.toDouble(),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
+            ],
+          ),
+        ),
 
-            ///invite image
-            Positioned(
-              right: 0,
-              left: 0,
-              top: 0,
-              height: DEFAULT_PADDING * 5,
-              child: assetImages(MyPng.referandearn,
-                  fit: BoxFit.contain, height: 100),
-            ),
-          ],
-        ).onTap(() {
-          // context.pushNamed(Routes.referAndEarn);
-          print('refer and earn');
-        }),
-      ),
+        ///invite image
+        Positioned(
+          right: 0,
+          left: 0,
+          top: 0,
+          height: DEFAULT_PADDING * 5,
+          child:
+              assetImages(MyPng.referandearn, fit: BoxFit.contain, height: 100),
+        ),
+      ],
     );
   }
 }
