@@ -52,6 +52,48 @@ class _DashboardFragmentState extends State<DashboardFragment>
           listAnimationType: ListAnimationType.FadeIn,
           children: [
             dashboardStore.isLoading ? buildLoadingGrid() : buildGrid(),
+
+            ///Notice section
+            Container(
+              width: context.width(),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    context.scaffoldBackgroundColor,
+                    Colors.indigo.withOpacity(0.1),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
+              ),
+              padding: const EdgeInsets.all(DEFAULT_PADDING),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: context.width(),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: DEFAULT_PADDING / 2,
+                        vertical: DEFAULT_PADDING / 4),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+                    ),
+                    child: Text('Notice',
+                            style: boldTextStyle(color: Colors.white, size: 25))
+                        .center(),
+                  ),
+                  5.height,
+                  Text(
+                    dashboardStore.notice.validate(),
+                    style: boldTextStyle(color: Colors.black, size: 15),
+                  ),
+                ],
+              ),
+            )
+                .paddingOnly(top: DEFAULT_PADDING / 2)
+                .visible(dashboardStore.notice.validate().isNotEmpty),
             (context.height() ~/ 2).height,
           ],
         ),
@@ -147,11 +189,20 @@ class _DashboardFragmentState extends State<DashboardFragment>
             children: [
               Column(
                 children: [
-                  Text(
-                    '${game.title.validate()}(${game.name.validate()})',
-                    style: boldTextStyle(color: color, size: 18),
-                    textAlign: TextAlign.center,
-                  ).center(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: DEFAULT_PADDING / 2,
+                        vertical: DEFAULT_PADDING / 4),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
+                    ),
+                    child: Text(
+                      '${game.title.validate()}(${game.name.validate()})',
+                      style: boldTextStyle(color: Colors.white, size: 15),
+                      textAlign: TextAlign.center,
+                    ).center(),
+                  ),
                   const Divider(thickness: 1, color: Colors.grey),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
