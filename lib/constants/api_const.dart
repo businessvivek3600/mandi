@@ -7,6 +7,7 @@ class ApiConst {
   static const String register = "auth/register";
   static const String getUser = "getUser";
   static const String updateProfile = "user/updateInformation";
+  static const String updatePassword = "user/setting/updatePassword";
 
   static const String sendMobileVerification = "user/resend-verify?type=phone";
   static const String sendEmailVerification = "user/resend-verify?type=email";
@@ -14,7 +15,6 @@ class ApiConst {
   static const String verifyMobile = "user/verify-sms";
   static const String forgotPassword = "password/email";
   static const String forgotPasswordSubmit = "submit-password-otp";
-  static const String updatePassword = "user/change-password";
   static const String updateProfileImage = "user/update-profile-image";
 
   static const String bidHistory = "user/bids";

@@ -211,4 +211,27 @@ class AuthService {
       logger.e('getUserByToken error : $e', tag: tag);
     }
   }
+
+  ///update password
+  Future<bool> updatePassword(String currentPassword, String newPassword,
+      String confirmPassword) async {
+    try {
+      var (bool status, Map<String, dynamic> data, String? message) =
+          await ApiHandler.fetchData(ApiConst.updatePassword,
+              method: ApiMethod.POST,
+              data: {
+            'current_password': currentPassword,
+            'password': newPassword,
+            'password_confirmation': confirmPassword
+          });
+      if (status) {
+        logger.i('updatePassword status : $status $message',
+            error: data, tag: tag);
+        return true;
+      }
+    } catch (e) {
+      logger.e('updatePassword error : $e', tag: tag);
+    }
+    return false;
+  }
 }

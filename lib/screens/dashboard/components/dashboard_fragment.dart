@@ -130,6 +130,7 @@ class _DashboardFragmentState extends State<DashboardFragment>
         crossAxisCount: 2,
         crossAxisSpacing: DEFAULT_PADDING,
         mainAxisSpacing: DEFAULT_PADDING,
+        childAspectRatio: 0.9,
       ),
       itemBuilder: (context, index) {
         Game game = dashboardStore.gamesList[index];

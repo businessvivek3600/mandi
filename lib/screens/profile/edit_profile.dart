@@ -57,6 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       'lastname': _lastNameController.text,
       'phone_code': _phoneCodeController.text,
       'phone': _phoneNumberController.text,
+      'email': _emailController.text,
       'address': _addressController.text,
     };
 

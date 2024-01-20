@@ -30,7 +30,7 @@ class Apis {
     try {
       var (bool status, Map<String, dynamic> data, String? message) =
           await ApiHandler.fetchData(
-              ApiConst.mondiResultHistory(type, 20, game ?? '', page),
+              ApiConst.mondiResultHistory(type, 100, game ?? '', page),
               method: ApiMethod.GET);
       if (status && data.isNotEmpty) {
         return (true, data);

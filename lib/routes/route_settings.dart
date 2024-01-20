@@ -34,7 +34,7 @@ final GoRouter goRouter = GoRouter(
         ///Mondi Result
         GoRoute(
           path: Paths.mondiResult,
-          name: Routes.mondiResult,
+          name: Routes.mandiResult,
           pageBuilder: (context, state) =>
               animatedRoute(state, (state) => const MondiResultHistoryPage()),
         ),
@@ -53,6 +53,14 @@ final GoRouter goRouter = GoRouter(
           name: Routes.editProfile,
           pageBuilder: (context, state) =>
               animatedRoute(state, (state) => const EditProfileScreen()),
+        ),
+
+        ///change password
+        GoRoute(
+          path: Routes.changePassword,
+          name: Routes.changePassword,
+          pageBuilder: (context, state) =>
+              animatedRoute(state, (state) => const ChangePasswordPage()),
         ),
 
         ///widgets

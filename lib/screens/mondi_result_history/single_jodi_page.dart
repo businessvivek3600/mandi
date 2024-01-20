@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../model/model_index.dart';
 import '../../services/service_index.dart';
 import '../../store/store_index.dart';
 import '../../utils/utils_index.dart';
@@ -72,61 +71,64 @@ class _SingleJodiPageState extends State<SingleJodiPage>
     } else {
       currentPage++;
     }
-    // await Apis.getSingleJodiChartApi(type: type, page: currentPage)
-    //     .then((value) {
-    //   if (value.$1) {
-    // currentPage = tryCatch<int>(() => value.$2['data']['current_page']) ??
-    //     currentPage;
-    // total = tryCatch<int>(() => value.$2['data']['total']) ?? total;
-    List<String> gameList = tryCatch<List<String>>(() => ((
-                    // value.$2['data']['games']
-                    //  ??
-                    {
-              "1": "FR",
-              "2": "GH",
-              "3": "GL",
-              "4": "DS",
-              "5": "PP",
-              "6": "HH",
-              "7": "KK",
-              "8": "FF",
-              "9": "LL",
-              "10": "SS",
-              "11": "RR",
-              "12": "TT",
-              "13": "CC",
-              "14": "XX",
-              "15": "VV",
-              "16": "BB",
-              "17": "MM",
-              "18": "YY",
-            }) as Map<String, dynamic>)
-                .entries
-                .map<String>((e) => e.value.toString())
-                .toList()) ??
-        [];
-    List<SingleJodi> resultList = tryCatch<List<SingleJodi>>(() =>
-            // ((value.$2['data']['results'] ?? {}) as Map<String, dynamic>)
-            randomResult(gameList)
-                .entries
-                .map<SingleJodi>((e) => SingleJodi()
-                  ..date = tryCatch<DateTime>(() => DateTime.tryParse(e.key))
-                  ..games = e.value as Map<String, dynamic>?)
-                .toList()) ??
-        [];
-    if (isRefresh) {
-      results.value = resultList;
-    } else {
-      results.value = [...results.value, ...resultList];
-    }
-    if (gameList.isNotEmpty) {
-      games.value = gameList;
-    }
-    hasMore = results.value.length < total;
-    pl('games: ${games.value.length} results: ${results.value.length}  total: $total hasMore: $hasMore',
-        'Mondi result List Page');
-    // }
-    // });
+    await Apis.getSingleJodiChartApi(type: type, page: currentPage)
+        .then((value) {
+      if (value.$1) {
+        currentPage =
+            tryCatch<int>(() => int.tryParse(value.$2['data']['page'])) ??
+                currentPage;
+        total = tryCatch<int>(() => value.$2['data']['total']) ?? total;
+        pl(' total: ${value.$2['data']['result'].length}',
+            'Mondi result List Page');
+        List<String> gameList =
+            tryCatch<List<String>>(() => ((value.$2['data']['games'] ??
+                        {
+                          // "1": "FR",
+                          // "2": "GH",
+                          // "3": "GL",
+                          // "4": "DS",
+                          // "5": "PP",
+                          // "6": "HH",
+                          // "7": "KK",
+                          // "8": "FF",
+                          // "9": "LL",
+                          // "10": "SS",
+                          // "11": "RR",
+                          // "12": "TT",
+                          // "13": "CC",
+                          // "14": "XX",
+                          // "15": "VV",
+                          // "16": "BB",
+                          // "17": "MM",
+                          // "18": "YY",
+                        }) as Map<String, dynamic>)
+                    .entries
+                    .map<String>((e) => e.value.toString())
+                    .toList()) ??
+                [];
+        List<SingleJodi> resultList = tryCatch<List<SingleJodi>>(() =>
+                ((value.$2['data']['result'] ?? {}) as Map<String, dynamic>)
+                    // randomResult(gameList)
+                    .entries
+                    .map<SingleJodi>((e) => SingleJodi()
+                      ..date =
+                          tryCatch<DateTime>(() => DateTime.tryParse(e.key))
+                      ..games = e.value as Map<String, dynamic>?)
+                    .toList()) ??
+            [];
+        if (isRefresh) {
+          results.value = resultList;
+        } else {
+          results.value = [...results.value, ...resultList];
+        }
+        if (gameList.isNotEmpty) {
+          games.value = gameList;
+        }
+        hasMore = results.value.length < total;
+        pl('games: ${games.value.length} results: ${results.value.length}  total: $total hasMore: $hasMore',
+            'Mondi result List Page');
+      }
+    });
     isLoading.value = false;
   }
 
@@ -205,7 +207,7 @@ class _SingleJodiPageState extends State<SingleJodiPage>
           return Scaffold(
             appBar: AppBar(
               centerTitle: false,
-              title: const Text('Single Jodi Result'),
+              title: const Text('Mandi Result History'),
               bottom: TabBar(
                 controller: _tabController,
                 indicatorColor: Colors.white,

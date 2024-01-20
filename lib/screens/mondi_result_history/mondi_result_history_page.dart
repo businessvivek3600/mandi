@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../model/model_index.dart';
@@ -7,7 +6,6 @@ import '../../services/service_index.dart';
 import '../../store/store_index.dart';
 import '../../utils/utils_index.dart';
 import '../../widgets/widget_index.dart';
-import '../screen_index.dart';
 
 class MondiResultHistoryPage extends StatefulWidget {
   const MondiResultHistoryPage({super.key});
@@ -114,7 +112,8 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
           return Scaffold(
             appBar: AppBar(
               centerTitle: false,
-              title: const Text('Mondi Result'),
+              titleSpacing: 0,
+              title: const Text('Single Jodi Chart'),
               actions: [
                 /// dropdown from dashboardstore.games
                 if (dashboardStore.gamesList.isNotEmpty)

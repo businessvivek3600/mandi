@@ -83,12 +83,27 @@ class _DashboardDrawerState extends State<DashboardDrawer> {
               child: ListView(
                 padding: const EdgeInsets.all(0),
                 children: [
+                  ///single jodi result
+                  ListTile(
+                    // tileColor: context.primaryColor.withOpacity(1),
+                    onTap: () => context.pushNamed(Routes.mandiResult),
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
+                    leading:
+                        const Icon(Icons.history_rounded, color: Colors.black),
+                    minLeadingWidth: 0,
+                    title: Text('Single Jodi Result',
+                        style: boldTextStyle(color: Colors.black)),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        size: 15, color: Colors.black),
+                  ).paddingAll(DEFAULT_PADDING / 2),
+                  Divider(thickness: 1, color: Colors.grey[300], height: 0),
+
                   /// Mondi result history
                   ListTile(
                     // tileColor: context.primaryColor.withOpacity(1),
-                    onTap: () {
-                      context.pushNamed(Routes.mondiResult);
-                    },
+                    onTap: () => context.pushNamed(Routes.singleJodi),
                     dense: true,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
@@ -97,27 +112,6 @@ class _DashboardDrawerState extends State<DashboardDrawer> {
                     minLeadingWidth: 0,
                     title: Text(
                       'Mondi Result History',
-                      style: boldTextStyle(color: Colors.black),
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                        size: 15, color: Colors.black),
-                  ).paddingAll(DEFAULT_PADDING / 2),
-                  Divider(thickness: 1, color: Colors.grey[300], height: 0),
-
-                  ///single jodi result
-                  ListTile(
-                    // tileColor: context.primaryColor.withOpacity(1),
-                    onTap: () {
-                      context.pushNamed(Routes.singleJodi);
-                    },
-                    dense: true,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
-                    leading:
-                        const Icon(Icons.history_rounded, color: Colors.black),
-                    minLeadingWidth: 0,
-                    title: Text(
-                      'Single Jodi Result',
                       style: boldTextStyle(color: Colors.black),
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios_rounded,
@@ -138,6 +132,72 @@ class _DashboardDrawerState extends State<DashboardDrawer> {
                     minLeadingWidth: 0,
                     title: Text(
                       'Edit Profile',
+                      style: boldTextStyle(color: Colors.black),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        size: 15, color: Colors.black),
+                  ).paddingAll(DEFAULT_PADDING / 2),
+                  Divider(thickness: 1, color: Colors.grey[300], height: 0),
+
+                  /// change password
+                  ListTile(
+                    // tileColor: context.primaryColor.withOpacity(1),
+                    onTap: () {
+                      context.pushNamed(Routes.changePassword);
+                    },
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
+                    leading: const Icon(Icons.lock, color: Colors.black),
+                    minLeadingWidth: 0,
+                    title: Text(
+                      'Change Password',
+                      style: boldTextStyle(color: Colors.black),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        size: 15, color: Colors.black),
+                  ).paddingAll(DEFAULT_PADDING / 2),
+                  Divider(thickness: 1, color: Colors.grey[300], height: 0),
+
+                  ///Share App
+                  ListTile(
+                    // tileColor: context.primaryColor.withOpacity(1),
+                    onTap: () {
+                      AppShare.shareApp(
+                        list: dashboardStore.gamesList
+                            .map((e) => e.title.validate())
+                            .toList(),
+                      );
+                    },
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
+                    leading: const Icon(Icons.share, color: Colors.black),
+                    minLeadingWidth: 0,
+                    title: Text(
+                      'Share App',
+                      style: boldTextStyle(color: Colors.black),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        size: 15, color: Colors.black),
+                  ).paddingAll(DEFAULT_PADDING / 2),
+                  Divider(thickness: 1, color: Colors.grey[300], height: 0),
+
+                  ///Rate us
+                  ListTile(
+                    // tileColor: context.primaryColor.withOpacity(1),
+                    onTap: () {
+                      // AppReview.requestReview.then((value) {
+                      //   print('value: $value');
+                      // });
+                    },
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
+                    leading: const Icon(Icons.star, color: Colors.black),
+                    minLeadingWidth: 0,
+                    title: Text(
+                      'Rate Us',
                       style: boldTextStyle(color: Colors.black),
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios_rounded,

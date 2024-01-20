@@ -11,7 +11,7 @@ class Paths {
 
   ///Dashboard
   static const String dashboard = '/${Routes.dashboard}';
-  static const String mondiResult = '${Routes.mondiResult}/list';
+  static const String mondiResult = '${Routes.mandiResult}/list';
   static const String singleJodi = '${Routes.singleJodi}';
 
   ///sub-path
@@ -51,6 +51,8 @@ class Paths {
   static const String profile = '${Paths.dashboard}/${Routes.profile}';
   static const String editProfile =
       '${Paths.dashboard}/${Routes.profile}/${Routes.editProfile}';
+  static const String changePassword =
+      '${Paths.dashboard}/${Routes.profile}/${Routes.changePassword}';
 
   ///company
   static const String aboutUs = '/${Routes.aboutUs}';

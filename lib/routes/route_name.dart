@@ -5,10 +5,11 @@ class Routes {
   static const String login = 'login';
   static const String register = 'register';
   static const String forgotPassword = 'forgot-password';
+  static const String changePassword = 'change-password';
 
   ///Dashboard
   static const String dashboard = 'dashboard';
-  static const String mondiResult = 'mondi';
+  static const String mandiResult = 'mondi';
   static const String singleJodi = 'singleJodi';
 
   ///Wallet
