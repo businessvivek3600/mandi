@@ -1,0 +1,88 @@
+name: coinxfiat
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  nb_utils: ^6.0.6
+  google_fonts: ^6.1.0
+  intl: ^0.18.1
+  cached_network_image: ^3.3.0
+  mobx: ^2.2.3
+  url_launcher: ^6.2.1
+  flutter_mobx: ^2.2.0+1
+  flutter_svg: ^2.0.9
+  lottie: ^2.7.0
+  dio: ^5.4.0
+  hexcolor: ^3.0.1
+  fluttertoast: ^8.2.4
+  flutter_linkify: ^6.0.0
+  logger: ^2.0.2+1
+  path_drawing: ^1.0.1
+  version: ^3.0.2
+  html: ^0.15.4
+  device_info_plus: ^9.1.1
+  package_info_plus: ^4.2.0
+  http: ^1.1.0
+  shared_preferences: ^2.2.2
+  flutter_custom_tabs: ^1.2.1
+  xml: ^6.3.0
+  path_provider: ^2.1.1
+  flutter_localization: ^0.1.14
+  permission_handler: ^11.0.1
+  font_awesome_flutter: ^10.6.0
+  auto_size_text: ^3.0.0
+  go_router: ^12.1.3
+  pretty_qr_code: ^3.0.0
+  flutter_fancy_tree_view: ^1.4.1
+  skeletonizer: ^0.8.0
+  file_picker: ^6.1.1
+  flutter_chat_ui: ^1.6.10
+  image_picker: ^1.0.5
+  open_filex: ^4.3.4
+  mime: ^1.0.4
+  flutter_chat_types: ^3.6.2
+  uuid: ^4.2.2
+  share_plus: ^7.2.1
+  animated_custom_dropdown: ^2.0.0
+  flutter_simple_multiselect: ^2.0.0
+  flutter_html: ^3.0.0-beta.2
+  flutter_widget_from_html: ^0.14.9
+  flutter_sticky_header: ^0.6.5
+  just_the_tooltip: ^0.0.12
+  pusher_channels_flutter: ^2.2.0
+  fl_country_code_picker: ^0.1.9+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.6
+  mobx_codegen: ^2.4.0
+  change_app_package_name: ^1.1.0
+  #dart run build_runner build --delete-conflicting-outputs
+  #dart run build_runner watch --delete-conflicting-outputs
+
+  # flutter_gen_runner: ^5.3.2
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/app/
+    - assets/images/flags/
+    - assets/images/icons/
+    - assets/animations/
+    - assets/audios/
+    - assets/lotties/
+    - assets/fonts/
+    - assets/svgs/
+    - assets/videos/
+    - assets/translations/
+
