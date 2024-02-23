@@ -1,10 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:coinxfiat/screens/auth/auth_screen.dart';
-import 'package:coinxfiat/utils/extensions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 // import 'package:image_cropper/image_cropper.dart';
@@ -21,6 +24,15 @@ import '../main.dart';
 import '../store/store_index.dart';
 import '../utils/utils_index.dart';
 import 'app_update/upgrader.dart';
+
+FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+/// get firebase messaging token
+Future<String?> getFbToken() async {
+  String? token = await firebaseMessaging.getToken();
+  logger.i('getFirebaseMessagingToken: $token');
+  return token;
+}
 
 exitTheApp() async {
   if (Platform.isAndroid) {
@@ -128,6 +140,14 @@ Map<String, String> parseStringXml(String xmlString) {
 
 // working update
 checkForUpdate(BuildContext context) async {
+  if (isAndroid) {
+    updateAndroidApp(context: context);
+  } else {
+    checkForUpdateIOS(context);
+  }
+}
+
+void checkForUpdateIOS(BuildContext context) async {
   Upgrader upgrader = Upgrader(
     debugLogging: true,
     showIgnore: false,
@@ -159,6 +179,60 @@ checkForUpdate(BuildContext context) async {
   } catch (e) {
     logger.e('upgrader.initialize()',
         error: e, stackTrace: StackTrace.current, tag: 'checkForUpdate');
+  }
+}
+
+/// update android app
+void updateAndroidApp({BuildContext? context}) async {
+  // Locale myLocale = Localizations.localeOf(context);
+  // print('LOCALE: ${myLocale.languageCode} || ${myLocale.countryCode}');
+
+  InAppUpdateManager manager = InAppUpdateManager();
+  var packageInfo = await PackageManager.getPackageInfo();
+  log(packageInfo.toJson().toString());
+  if (Platform.isAndroid) {
+    AppUpdateInfo? appUpdateInfo = await manager.checkForUpdate();
+    pl('appupdate info ${appUpdateInfo?.toJson()}');
+    if (appUpdateInfo == null) return;
+i
+    // appUpdateInfo.updateAvailability =
+    //     UpdateAvailability.developerTriggeredUpdateInProgress;
+    pl('appupdate info ${appUpdateInfo.toJson()}');
+
+    /// Update developerTriggeredUpdateInProgress
+    if (appUpdateInfo.updateAvailability ==
+        UpdateAvailability.developerTriggeredUpdateInProgress) {
+      //If an in-app update is already running, resume the update.
+
+      String? message =
+          await manager.startAnUpdate(type: AppUpdateType.flexible);
+      log('updateApp developerTriggeredUpdateInProgress => $message');
+    }
+
+    /// Update available
+    else if (appUpdateInfo.updateAvailability ==
+        UpdateAvailability.updateAvailable) {
+      ///immediate allowed
+      if (appUpdateInfo.immediateAllowed) {
+        String? message =
+            await manager.startAnUpdate(type: AppUpdateType.immediate);
+        log('updateApp immediateAllowed => $message');
+      }
+
+      /// flexible allowed
+      else if (appUpdateInfo.flexibleAllowed) {
+        String? message =
+            await manager.startAnUpdate(type: AppUpdateType.flexible);
+        log('updateApp flexibleAllowed => $message');
+      }
+
+      /// immediate & flexible not allowed
+      else {
+        log('Update app available. Immediate & Flexible Update Flow not allow ${appUpdateInfo.toJson()}');
+      }
+    }
+    // restartAppKey.value = UniqueKey();
+    if (context != null) RestartAppWidget.init(context);
   }
 }
 
@@ -552,3 +626,5 @@ const GOOGLE_MAP_PREFIX = 'https://www.google.com/maps/search/?api=1&query=';
 
 SlideConfiguration sliderConfigurationGlobal =
     SlideConfiguration(duration: 400.milliseconds, delay: 50.milliseconds);
+
+/// session Expired Dialog with loading progress and Please login message

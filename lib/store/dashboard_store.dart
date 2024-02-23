@@ -34,6 +34,9 @@ abstract class _DashboardStore with Store {
   String? notice = '';
 
   @observable
+  String companyMobile = '';
+
+  @observable
   List<Game> gamesList = [];
 
   @action
@@ -72,6 +75,11 @@ abstract class _DashboardStore with Store {
   }
 
   @action
+  void setCompanyMobile(String value) {
+    companyMobile = value;
+  }
+
+  @action
   void setGamesList(List<Game> value) {
     gamesList = value;
     log('gamesList : $gamesList');
@@ -85,6 +93,7 @@ abstract class _DashboardStore with Store {
         Map<String, dynamic> data = value.$2['data'];
         if (value.$1 && data.isNotEmpty) {
           setTotalReferral(data['referral_count'] ?? 0);
+          setCompanyMobile(data['company_mobile'] ?? '');
           setNotice(data['message'] ?? '');
           try {
             setGamesList(((data['games'] != null && data['games'] is List)

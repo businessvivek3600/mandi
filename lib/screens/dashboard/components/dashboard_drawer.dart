@@ -186,20 +186,14 @@ class _DashboardDrawerState extends State<DashboardDrawer> {
                   ///Rate us
                   ListTile(
                     // tileColor: context.primaryColor.withOpacity(1),
-                    onTap: () {
-                      // AppReview.requestReview.then((value) {
-                      //   print('value: $value');
-                      // });
-                    },
+                    onTap: AppShare.rateApp,
                     dense: true,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(DEFAULT_RADIUS)),
                     leading: const Icon(Icons.star, color: Colors.black),
                     minLeadingWidth: 0,
-                    title: Text(
-                      'Rate Us',
-                      style: boldTextStyle(color: Colors.black),
-                    ),
+                    title: Text('Rate Us',
+                        style: boldTextStyle(color: Colors.black)),
                     trailing: const Icon(Icons.arrow_forward_ios_rounded,
                         size: 15, color: Colors.black),
                   ).paddingAll(DEFAULT_PADDING / 2),

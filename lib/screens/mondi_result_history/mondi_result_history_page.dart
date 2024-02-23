@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../database/database_index.dart';
 import '../../model/model_index.dart';
 import '../../services/service_index.dart';
 import '../../store/store_index.dart';
@@ -30,9 +31,9 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
   int currentPage = 1;
   int total = 0;
   bool hasMore = false;
-  ValueNotifier<dynamic> selectedJodi = ValueNotifier<dynamic>(null);
-  ValueNotifier<dynamic> selectedFirst = ValueNotifier<dynamic>(null);
-  ValueNotifier<dynamic> selectedLast = ValueNotifier<dynamic>(null);
+  ValueNotifier<Set<String>> selectedJodi = ValueNotifier<Set<String>>({});
+  ValueNotifier<Set<String>> selectedFirst = ValueNotifier<Set<String>>({});
+  ValueNotifier<Set<String>> selectedLast = ValueNotifier<Set<String>>({});
   @override
   void initState() {
     super.initState();
@@ -45,9 +46,10 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
       _tabController.addListener(() {
         type = tabs.entries.toList()[_tabController.index].key.toLowerCase();
         games.value.clear();
-        selectedJodi.value = null;
-        selectedFirst.value = null;
-        selectedLast.value = null;
+        selectedJodi.value.clear();
+        selectedFirst.value.clear();
+        selectedLast.value.clear();
+      
         getMondiResultHistory(isRefresh: true);
       });
     });
@@ -89,9 +91,21 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
     isLoading.value = false;
   }
 
-  void onJodiTap(String number) => selectedJodi.value = number;
-  void onFirstTap(String number) => selectedFirst.value = number;
-  void onLastTap(String number) => selectedLast.value = number;
+  void onJodiTap(String number) => setState(() {
+        selectedJodi.value.contains(number)
+            ? selectedJodi.value.remove(number)
+            : selectedJodi.value.add(number);
+      });
+  void onFirstTap(String number) => setState(() {
+        selectedFirst.value.contains(number)
+            ? selectedFirst.value.remove(number)
+            : selectedFirst.value.add(number);
+      });
+  void onLastTap(String number) => setState(() {
+        selectedLast.value.contains(number)
+            ? selectedLast.value.remove(number)
+            : selectedLast.value.add(number);
+      });
 
   @override
   void setState(VoidCallback fn) {
@@ -231,14 +245,14 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
           }
           return ValueListenableBuilder<dynamic>(
               valueListenable: selectedFirst,
-              builder: (_, selectedFirst, c) {
+              builder: (_, selectedFirstvalue, c) {
                 return ValueListenableBuilder<dynamic>(
                     valueListenable: selectedLast,
-                    builder: (_, selectedLast, c) {
+                    builder: (_, selectedLastValue, c) {
                       return ValueListenableBuilder<dynamic>(
                           valueListenable: selectedJodi,
-                          builder: (_, selectedValue, c) {
-                            pl('selectedFirst:  selectedJodi: $selectedValue selectedFirst: $selectedFirst selectedLast: $selectedLast',
+                          builder: (_, selectedJodiValue, c) {
+                            pl('selectedFirst:  selectedJodi: $selectedJodiValue selectedFirst: $selectedFirstvalue selectedLast: $selectedLastValue',
                                 'Mondi result List Page');
                             return AnimatedListView(
                               onSwipeRefresh: () =>
@@ -252,7 +266,6 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
                               itemBuilder: (context, index) {
                                 GameResult game = list[index];
                                 bool last = index == list.length - 1;
-
                                 String jodi = game.number.validate().toString();
                                 String numberFirst = game.number
                                     .validate()
@@ -266,13 +279,13 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
                                 bool isFirst = false;
                                 bool isLast = false;
 
-                                if (selectedValue == jodi) {
+                                if (selectedJodiValue.contains(jodi)) {
                                   isJodi = true;
                                 }
-                                if (selectedFirst == numberFirst) {
+                                if (selectedFirstvalue.contains(numberFirst)) {
                                   isFirst = true;
                                 }
-                                if (selectedLast == numberLast) {
+                                if (selectedLastValue.contains(numberLast)) {
                                   isLast = true;
                                 }
                                 pl('jodi: $jodi $isJodi numberFirst: $numberFirst $isFirst numberLast: $numberLast $isLast',
@@ -314,9 +327,30 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
     bool isFirst = false,
     bool isLast = false,
   }) {
-    Color jodiColor = Colors.red;
-    Color firstColor = Colors.blue;
-    Color lastColor = Colors.green;
+    List<Color> colors = [
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.amber,
+      Colors.grey,
+      Colors.purple,
+      Colors.pink,
+      Colors.teal,
+      Colors.indigo,
+      Colors.cyan,
+    ];
+    Color jodiColor = isJodi
+        ? Color(int.parse(generateColorCode(jodi.split('').join('dfd'))
+                .replaceAll('#', '0xFF')))
+            .withOpacity(0.8)
+        : Colors.transparent;
+    Color firstColor = isFirst
+        ? Color(int.parse(generateColorCode(gameFirst.split('').join('dfd'))
+                .replaceAll('#', '0xFF')))
+            .withOpacity(0.6)
+        : Colors.transparent;
+    Color lastColor =
+        isLast ? colors[gameLast.split('').last.toInt()] : Colors.transparent;
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -332,28 +366,33 @@ class _MondiResultHistoryPageState extends State<MondiResultHistoryPage>
           VerticalDivider(
               color: Colors.black.withOpacity(0.5), thickness: 1, width: 0),
           Container(
-              color: isJodi ? jodiColor.withOpacity(0.1) : Colors.transparent,
+              color: jodiColor,
               child: Text(jodi,
-                      style: boldTextStyle(
-                          color: isJodi ? Colors.red : Colors.black))
+                      style: TextStyle(shadows: [
+                        if (isJodi)
+                          Shadow(
+                              color: Colors.black.withOpacity(1),
+                              offset: const Offset(1, 1),
+                              blurRadius: 3),
+                      ], color: isJodi ? Colors.white : Colors.black))
                   .center()
                   .onTap(() => onJodiTap?.call(jodi))).expand(),
           VerticalDivider(
               color: Colors.black.withOpacity(0.5), thickness: 1, width: 0),
           Container(
-              color: isFirst ? firstColor.withOpacity(0.1) : Colors.transparent,
+              color: firstColor,
               child: Text(gameFirst,
                       style: boldTextStyle(
-                          color: isFirst ? Colors.blue : Colors.black))
+                          color: isFirst ? Colors.white : Colors.black))
                   .center()
                   .onTap(() => onFirstTap?.call(gameFirst))).expand(),
           VerticalDivider(
               color: Colors.black.withOpacity(0.5), thickness: 1, width: 0),
           Container(
-              color: isLast ? lastColor.withOpacity(0.1) : Colors.transparent,
+              color: lastColor,
               child: Text(gameLast,
                       style: boldTextStyle(
-                          color: isLast ? Colors.green : Colors.black))
+                          color: isLast ? Colors.white : Colors.black))
                   .center()
                   .onTap(() => onLastTap?.call(gameLast))).expand(),
         ],

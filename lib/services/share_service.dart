@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/constants_index.dart';
 
 class AppShare {
@@ -68,5 +71,21 @@ Feel free to share this information with others! 🌐""";
     }).join();
 
     return result;
+  }
+
+  ///rate app
+  static Future<void> rateApp() async {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      final appId = defaultTargetPlatform == TargetPlatform.android
+          ? AppConst.packageName
+          : AppConst.appStoreId;
+      final url = Uri.parse(
+        defaultTargetPlatform == TargetPlatform.android
+            ? "market://details?id=$appId"
+            : "https://apps.apple.com/app/id$appId",
+      );
+      launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
 }

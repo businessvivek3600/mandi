@@ -33,6 +33,22 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  late final _$isSessionExpiredAtom =
+      Atom(name: '_AppStore.isSessionExpired', context: context);
+
+  @override
+  bool get isSessionExpired {
+    _$isSessionExpiredAtom.reportRead();
+    return super.isSessionExpired;
+  }
+
+  @override
+  set isSessionExpired(bool value) {
+    _$isSessionExpiredAtom.reportWrite(value, super.isSessionExpired, () {
+      super.isSessionExpired = value;
+    });
+  }
+
   late final _$isDarkModeAtom =
       Atom(name: '_AppStore.isDarkMode', context: context);
 
@@ -286,6 +302,22 @@ mixin _$AppStore on _AppStore, Store {
   set userContactNumber(String value) {
     _$userContactNumberAtom.reportWrite(value, super.userContactNumber, () {
       super.userContactNumber = value;
+    });
+  }
+
+  late final _$mobileVerifiedAtom =
+      Atom(name: '_AppStore.mobileVerified', context: context);
+
+  @override
+  bool get mobileVerified {
+    _$mobileVerifiedAtom.reportRead();
+    return super.mobileVerified;
+  }
+
+  @override
+  set mobileVerified(bool value) {
+    _$mobileVerifiedAtom.reportWrite(value, super.mobileVerified, () {
+      super.mobileVerified = value;
     });
   }
 
@@ -634,6 +666,24 @@ mixin _$AppStore on _AppStore, Store {
     _$userWalletAmountAtom.reportWrite(value, super.userWalletAmount, () {
       super.userWalletAmount = value;
     });
+  }
+
+  late final _$setSessionExpiredAsyncAction =
+      AsyncAction('_AppStore.setSessionExpired', context: context);
+
+  @override
+  Future<void> setSessionExpired(bool val) {
+    return _$setSessionExpiredAsyncAction
+        .run(() => super.setSessionExpired(val));
+  }
+
+  late final _$setMobileVerifiedAsyncAction =
+      AsyncAction('_AppStore.setMobileVerified', context: context);
+
+  @override
+  Future<void> setMobileVerified(bool value, {bool isInitializing = false}) {
+    return _$setMobileVerifiedAsyncAction.run(
+        () => super.setMobileVerified(value, isInitializing: isInitializing));
   }
 
   late final _$setUserWalletAmountAsyncAction =
@@ -1009,6 +1059,7 @@ mixin _$AppStore on _AppStore, Store {
   String toString() {
     return '''
 isLoggedIn: ${isLoggedIn},
+isSessionExpired: ${isSessionExpired},
 isDarkMode: ${isDarkMode},
 isLoading: ${isLoading},
 isFavorite: ${isFavorite},
@@ -1025,6 +1076,7 @@ userFirstName: ${userFirstName},
 userLastName: ${userLastName},
 uid: ${uid},
 userContactNumber: ${userContactNumber},
+mobileVerified: ${mobileVerified},
 userEmail: ${userEmail},
 userName: ${userName},
 fullname: ${fullname},

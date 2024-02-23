@@ -1,8 +1,10 @@
-plugins {
+plugins { 
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
+//    FA:07:BE:49:F7:24:4D:74:E1:52:E5:EC:AD:B2:2A:EF:DB:95:1A:DC
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -53,8 +55,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 10
+        versionName "1.1.0"
     }
 
     signingConfigs {
@@ -76,4 +78,9 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    // implementation("androidx.window:window:1.2.0")
+    // implementation("androidx.window:window-java:1.2.0")
+}

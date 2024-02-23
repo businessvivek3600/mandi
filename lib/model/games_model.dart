@@ -45,7 +45,7 @@ class GameResult {
   int? id;
   String? date;
   int? gameId;
-  int? number;
+  String? number;
   Game? game;
 
   GameResult({this.id, this.date, this.gameId, this.number, this.game});
@@ -54,7 +54,7 @@ class GameResult {
     id = json['id'];
     date = json['date'];
     gameId = json['game_id'];
-    number = tryCatch<int>(() => int.parse(json['number'])) ?? 0;
+    number = json['number'];
     game = tryCatch<Game>(() => Game.fromJson(json['game']));
   }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "617254699903",
+    "project_id": "npl-mandi",
+    "storage_bucket": "npl-mandi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617254699903:android:10e980d794293742fb504a",
+        "android_client_info": {
+          "package_name": "com.npl.mandi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGGpoNFO4AOncNtYSL5NWpkbFSN42CJCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -105,6 +105,38 @@ mixin _$DashboardStore on _DashboardStore, Store {
     });
   }
 
+  late final _$noticeAtom =
+      Atom(name: '_DashboardStore.notice', context: context);
+
+  @override
+  String? get notice {
+    _$noticeAtom.reportRead();
+    return super.notice;
+  }
+
+  @override
+  set notice(String? value) {
+    _$noticeAtom.reportWrite(value, super.notice, () {
+      super.notice = value;
+    });
+  }
+
+  late final _$companyMobileAtom =
+      Atom(name: '_DashboardStore.companyMobile', context: context);
+
+  @override
+  String get companyMobile {
+    _$companyMobileAtom.reportRead();
+    return super.companyMobile;
+  }
+
+  @override
+  set companyMobile(String value) {
+    _$companyMobileAtom.reportWrite(value, super.companyMobile, () {
+      super.companyMobile = value;
+    });
+  }
+
   late final _$gamesListAtom =
       Atom(name: '_DashboardStore.gamesList', context: context);
 
@@ -199,6 +231,28 @@ mixin _$DashboardStore on _DashboardStore, Store {
   }
 
   @override
+  void setNotice(String? value) {
+    final _$actionInfo = _$_DashboardStoreActionController.startAction(
+        name: '_DashboardStore.setNotice');
+    try {
+      return super.setNotice(value);
+    } finally {
+      _$_DashboardStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setCompanyMobile(String value) {
+    final _$actionInfo = _$_DashboardStoreActionController.startAction(
+        name: '_DashboardStore.setCompanyMobile');
+    try {
+      return super.setCompanyMobile(value);
+    } finally {
+      _$_DashboardStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setGamesList(List<Game> value) {
     final _$actionInfo = _$_DashboardStoreActionController.startAction(
         name: '_DashboardStore.setGamesList');
@@ -218,6 +272,8 @@ runningTrade: ${runningTrade},
 completedTrade: ${completedTrade},
 gateways: ${gateways},
 totalReferral: ${totalReferral},
+notice: ${notice},
+companyMobile: ${companyMobile},
 gamesList: ${gamesList}
     ''';
   }

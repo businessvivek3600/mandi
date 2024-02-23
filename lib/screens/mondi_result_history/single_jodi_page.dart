@@ -22,6 +22,38 @@ class SingleJodiPage extends StatefulWidget {
 
 class _SingleJodiPageState extends State<SingleJodiPage>
     with SingleTickerProviderStateMixin {
+  /// 1. add all selected digit in a set
+  /// a empty set is created
+  ///
+  /// 2. check if the set contains the selected digit for game number
+  /// a method returning bool if containts that digit
+  ///
+  ///
+  /// 3. assign them right color based on the selected digit for game number if selected
+  /// List of 10 colors is created
+  /// List<Colors> colors = [Colors.red, Colors.blue, Colors.green, Colors.yellow, Colors.orange, Colors.purple, Colors.pink, Colors.teal, Colors.indigo, Colors.cyan, Colors.amber, Colors.lime, Colors.brown, Colors.grey, Colors.deepOrange, Colors.deepPurple, Colors.lightBlue, Colors.lightGreen, Colors.blueGrey, Colors.black];
+  ///
+  ///
+  /// 4. remove the selected digit from the set if selected and tapped
+  /// a method to remove the selected digit from the set
+  ///
+
+  late Set<String> selectedDigits = <String>{}; // 1
+  bool containsDigit(String digit) => selectedDigits.contains(digit); // 2
+  List<Color> colors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.amber,
+    Colors.grey,
+    Colors.purple,
+    Colors.pink,
+    Colors.teal,
+    Colors.indigo,
+    Colors.cyan,
+  ]; // 3
+  void removeDigit(String digit) => selectedDigits.remove(digit); // 4
+
   late TabController _tabController;
   ValueNotifier<bool> isLoading = ValueNotifier<bool>(true);
   ValueNotifier<List<String>> games = ValueNotifier<List<String>>([]);
@@ -52,6 +84,7 @@ class _SingleJodiPageState extends State<SingleJodiPage>
       _tabController.addListener(() {
         type = tabs.entries.toList()[_tabController.index].key.toLowerCase();
         results.value.clear();
+        selectedDigits.clear();
         selectedJodi.value = null;
         selectedFirst.value = null;
         selectedLast.value = null;
@@ -417,12 +450,86 @@ class _SingleJodiPageState extends State<SingleJodiPage>
           ...games.map(
             (e) => Row(
               children: [
-                Container(
-                        color: Colors.transparent,
-                        child: Text(e.value.toString(),
-                                style: boldTextStyle(color: Colors.black))
-                            .center())
-                    .expand(),
+                Builder(builder: (context) {
+                  String firstLetter = e.value.toString().split('').first;
+                  String lastLetter = e.value.toString().split('').last;
+                  bool firstSelected = containsDigit(firstLetter);
+                  bool lastSelected = containsDigit(lastLetter);
+                  return Builder(builder: (context) {
+                    return Container(
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                                  decoration: BoxDecoration(
+                                    color: firstSelected
+                                        ? colors[int.tryParse(firstLetter) ?? 0]
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                  child: Text(firstLetter,
+                                          textAlign: TextAlign.center,
+                                          style: boldTextStyle(
+                                              backgroundColor: firstSelected
+                                                  ? colors[int.tryParse(
+                                                          firstLetter) ??
+                                                      0]
+                                                  : Colors.transparent,
+                                              color: firstSelected
+                                                  ? white
+                                                  : Colors.black))
+                                      .center()
+                                      .paddingSymmetric(
+                                          horizontal: 7, vertical: 2))
+                              .onTap(
+                                () {
+                                  if (firstSelected) {
+                                    removeDigit(firstLetter);
+                                  } else {
+                                    if (firstLetter != '-') {
+                                      selectedDigits.add(firstLetter);
+                                    }
+                                  }
+                                  setState(() {});
+                                },
+                              )
+                              .center()
+                              .paddingOnly(right: 4),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: lastSelected
+                                  ? colors[int.tryParse(lastLetter) ?? 0]
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: Text(lastLetter,
+                                    textAlign: TextAlign.center,
+                                    style: boldTextStyle(
+                                        color: lastSelected
+                                            ? white
+                                            : Colors.black))
+                                .center()
+                                .paddingSymmetric(horizontal: 7, vertical: 2),
+                          ).onTap(
+                            () {
+                              if (lastSelected) {
+                                removeDigit(lastLetter);
+                              } else {
+                                if (lastLetter != '-') {
+                                  selectedDigits.add(lastLetter);
+                                }
+                              }
+                              setState(() {});
+                            },
+                          ),
+                        ],
+                      ),
+                    ).expand();
+                  });
+                }),
                 VerticalDivider(
                         color: Colors.black.withOpacity(0.5),
                         thickness: 1,

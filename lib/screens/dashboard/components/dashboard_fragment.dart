@@ -1,14 +1,18 @@
 import 'package:coinxfiat/database/functions.dart';
 import 'package:coinxfiat/utils/extensions.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants/constants_index.dart';
 import '../../../model/model_index.dart';
 import '../../../services/service_index.dart';
 import '../../../store/store_index.dart';
+import '../../../utils/utils_index.dart';
 
 class DashboardFragment extends StatefulWidget {
   const DashboardFragment({super.key});
@@ -51,47 +55,22 @@ class _DashboardFragmentState extends State<DashboardFragment>
           ),
           listAnimationType: ListAnimationType.FadeIn,
           children: [
+            /// Container for varification mobile notice and verify action
+            verifyMobileNumber(context)
+                .paddingOnly(top: DEFAULT_PADDING / 2)
+                .visible(!appStore.mobileVerified),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(MyDateUtils.formatDate(DateTime.now(), 'dd MMMM yyyy'),
+                    style: boldTextStyle(
+                        size: 16, decoration: TextDecoration.underline)),
+              ],
+            ).paddingTop(10),
             dashboardStore.isLoading ? buildLoadingGrid() : buildGrid(),
 
             ///Notice section
-            Container(
-              width: context.width(),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    context.scaffoldBackgroundColor,
-                    Colors.indigo.withOpacity(0.1),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
-              ),
-              padding: const EdgeInsets.all(DEFAULT_PADDING),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: context.width(),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: DEFAULT_PADDING / 2,
-                        vertical: DEFAULT_PADDING / 4),
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
-                    ),
-                    child: Text('Notice',
-                            style: boldTextStyle(color: Colors.white, size: 25))
-                        .center(),
-                  ),
-                  5.height,
-                  Text(
-                    dashboardStore.notice.validate(),
-                    style: boldTextStyle(color: Colors.black, size: 15),
-                  ),
-                ],
-              ),
-            )
+            buildNotice(context)
                 .paddingOnly(top: DEFAULT_PADDING / 2)
                 .visible(dashboardStore.notice.validate().isNotEmpty),
             (context.height() ~/ 2).height,
@@ -120,6 +99,109 @@ class _DashboardFragmentState extends State<DashboardFragment>
         //   scrollController: _scrollController,
         //   loading: dashboardStore.isLoading,
         // ),
+      ),
+    );
+  }
+
+  Container verifyMobileNumber(BuildContext context) {
+    return Container(
+      width: context.width(),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.indigo),
+        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+      ),
+      padding: const EdgeInsets.all(DEFAULT_PADDING / 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // 'Your mobile number is not verified. Click here to complete the verification process.',
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Your mobile number is not verified. ',
+                  style: boldTextStyle(color: Colors.black),
+                ),
+                TextSpan(
+                    text: 'Click here',
+                    style: boldTextStyle(
+                        color: Colors.indigo,
+                        decoration: TextDecoration.underline),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        String phone = dashboardStore.companyMobile.validate();
+                        if (phone.isNotEmpty) {
+                          String text =
+                              'Please verify my mobile number ${appStore.userContactNumber.validate()}';
+                          Uri uri = Uri.parse(
+                              "https://api.whatsapp.com/send?phone=$phone&text=$text");
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            var error =
+                                "WhatsApp is not installed. or some happend wrong";
+                            toast(
+                              error,
+                              gravity: ToastGravity.TOP_RIGHT,
+                              bgColor: Colors.red,
+                              textColor: Colors.white,
+                            );
+                          }
+                        } else {
+                          toast(
+                            'Currently support is not available. Please try again later.',
+                            gravity: ToastGravity.TOP,
+                          );
+                        }
+                      }),
+                TextSpan(
+                  text: ' to complete the verification process.',
+                  style: boldTextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildNotice(BuildContext context) {
+    return Container(
+      width: context.width(),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            context.scaffoldBackgroundColor,
+            Colors.indigo.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(DEFAULT_RADIUS * 2),
+      ),
+      padding: const EdgeInsets.all(DEFAULT_PADDING),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: context.width(),
+            padding: const EdgeInsets.symmetric(
+                horizontal: DEFAULT_PADDING / 2, vertical: DEFAULT_PADDING / 4),
+            decoration: BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+            ),
+            child: Text('Notice',
+                    style: boldTextStyle(color: Colors.white, size: 25))
+                .center(),
+          ),
+          5.height,
+          Text(
+            dashboardStore.notice.validate(),
+            style: boldTextStyle(color: Colors.black, size: 15),
+          ),
+        ],
       ),
     );
   }
@@ -176,7 +258,7 @@ class _DashboardFragmentState extends State<DashboardFragment>
       ),
       itemBuilder: (context, index) {
         Game game = dashboardStore.gamesList[index];
-        String colorCode = generateColorCode('${game.title.validate()}$index');
+        String colorCode = generateColorCode('${game.title.validate()}');
         // String colorCode = generateColorCode(index.toString());
         Color color = Color(int.parse(colorCode.replaceAll('#', '0xFF')));
         return Container(
@@ -214,7 +296,7 @@ class _DashboardFragmentState extends State<DashboardFragment>
                               style: boldTextStyle(color: Colors.black87)),
                           1.height,
                           Text(
-                            '${game.today.validate()}',
+                            '${game.today.validate()}'.padLeft(2, '0'),
                             style: boldTextStyle(color: Colors.black, size: 20),
                           ),
                         ],
@@ -227,7 +309,7 @@ class _DashboardFragmentState extends State<DashboardFragment>
                               style: boldTextStyle(color: Colors.black87)),
                           1.height,
                           Text(
-                            '${game.yesterday.validate()}',
+                            '${game.yesterday.validate()}'.padLeft(2, '0'),
                             style: boldTextStyle(color: Colors.black, size: 20),
                           ),
                         ],

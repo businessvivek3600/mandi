@@ -18,7 +18,8 @@ class AuthService {
           // "username": "sumit9451sharma@gmail.com",
           // "password": "Sumit@9451"
           "username": email,
-          "password": password
+          "password": password,
+          "fcm_token": await getFbToken()
         },
       );
 
@@ -104,7 +105,8 @@ class AuthService {
           "password_confirmation": password,
           // "email": email,
           "phone_code": phoneCode,
-          "phone": phone
+          "phone": phone,
+          "fcm_token": await getFbToken()
         },
       );
       if (status) {
@@ -183,6 +185,9 @@ class AuthService {
         case 'address':
           await appStore.setAddress(value ?? '');
           break;
+        case 'mobile_verify':
+          await appStore.setMobileVerified(value ?? '');
+          break;
         default:
           break;
       }
@@ -234,4 +239,21 @@ class AuthService {
     }
     return false;
   }
+
+Future<bool> logoutUser() async {
+    await appStore.setLoggedIn(false);
+    await appStore.setToken('');
+    await appStore.setUserId(-1);
+    await appStore.setUserName('');
+    await appStore.setUserEmail('');
+    await appStore.setFirstName('');
+    await appStore.setLastName('');
+    await appStore.setUserProfile('');
+    await appStore.setContactNumber('');
+    await appStore.setAddress('');
+    await appStore.setMobileVerified(false);
+    await appStore.setPhoneCode('');
+    return true;
+  }
+
 }

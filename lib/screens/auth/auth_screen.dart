@@ -1,3 +1,4 @@
+import 'package:coinxfiat/database/functions.dart';
 import 'package:coinxfiat/utils/utils_index.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/gestures.dart';
@@ -25,6 +26,11 @@ class _AuthScreenState extends State<AuthScreen> {
   final _pageController = PageController();
 
   bool _isLogin = true;
+  @override
+  void initState() {
+    super.initState();
+    checkForUpdate(context);
+  }
 
   @override
   void dispose() {
@@ -45,33 +51,49 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: assetImages('app/auth-bg2.jpg').image,
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
-          child: Container(
-            margin: const EdgeInsets.all(20),
-
-            height: size.height,
-            width: size.width,
-            // constraints: const BoxConstraints(maxWidth: 500),
-            child: PageView(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                LoginScreen(
-                    returnPath: widget.returnPath, onTogglePage: _togglePage),
-                RegisterScreen(
-                    returnPath: widget.returnPath, onTogglePage: _togglePage),
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (_isLogin) return true;
+        _pageController.animateToPage(
+          _isLogin ? 1 : 0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+        );
+        setState(() => _isLogin = !_isLogin);
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: assetImages('app/auth-bg2.jpg').image,
+              fit: BoxFit.cover,
             ),
           ),
-        ).onTap(() => hideKeyboard(context), splashColor: Colors.transparent),
+          child: SafeArea(
+            child: Container(
+              margin: const EdgeInsets.all(20),
+
+              height: size.height,
+              width: size.width,
+              // constraints: const BoxConstraints(maxWidth: 500),
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  LoginScreen(
+                          returnPath: widget.returnPath,
+                          onTogglePage: _togglePage)
+                      .center(),
+                  RegisterScreen(
+                          returnPath: widget.returnPath,
+                          onTogglePage: _togglePage)
+                      .center(),
+                ],
+              ),
+            ),
+          ).onTap(() => hideKeyboard(context), splashColor: Colors.transparent),
+        ),
       ),
     );
   }
@@ -287,7 +309,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _lastNameController = TextEditingController();
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _phoneCodeController = TextEditingController();
+  final _phoneCodeController = TextEditingController(text: '+91');
   final _confirmPasswordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
@@ -298,14 +320,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
-  static RegExp passwordRegExp =
-      RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{6,}$');
+  // static RegExp passwordRegExp =
+  //     RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{6,}$');
 
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
-    } else if (!passwordRegExp.hasMatch(value)) {
-      return 'Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one symbol.';
+    } else if (value.length < 6) {
+      return 'Password must be at least 6 characters long.';
+      //  and include at least one uppercase letter, one lowercase letter, one digit, and one symbol.';
     }
     return null;
   }
@@ -476,45 +499,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ///phone code
-              Container(
-                constraints: const BoxConstraints(maxWidth: 100),
-                child: TextFormField(
-                  controller: _phoneCodeController,
-                  readOnly: true,
-                  onTap: () async {
-                    final picked = await countryPicker.showPicker(
-                      context: context,
-                    );
-                    // Null check
-                    if (picked != null) {
-                      setState(() {
-                        countryCode = picked;
-                        _phoneCodeController.text = countryCode!.dialCode;
-                      });
-                    }
-                    print(countryCode?.flagImage());
-                  },
-                  // focusNode: _phoneFocusNode,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  decoration: _buildInputDecoration(
-                    theme,
-                    '',
-                    (countryCode != null)
-                        ? countryCode!.flagImage(width: 10)
-                        : Icons.flag_circle_rounded,
-                    hint: countryCode?.dialCode ?? 'e.g +234',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) return '* required';
-                    return null;
-                  },
-                  // onFieldSubmitted: (_) {
-                  // FocusScope.of(context).requestFocus(_phoneFocusNode);
-                  // },
-                ),
-              ),
-              const SizedBox(width: 10),
+              // Container(
+              //   constraints: const BoxConstraints(maxWidth: 100),
+              //   child: TextFormField(
+              //     controller: _phoneCodeController,
+              //     readOnly: true,
+              //     onTap: () async {
+              //       final picked = await countryPicker.showPicker(
+              //         context: context,
+              //       );
+              //       // Null check
+              //       if (picked != null) {
+              //         setState(() {
+              //           countryCode = picked;
+              //           _phoneCodeController.text = countryCode!.dialCode;
+              //         });
+              //       }
+              //       print(countryCode?.flagImage());
+              //     },
+              //     // focusNode: _phoneFocusNode,
+              //     keyboardType: TextInputType.phone,
+              //     textInputAction: TextInputAction.next,
+              //     decoration: _buildInputDecoration(
+              //       theme,
+              //       '',
+              //       (countryCode != null)
+              //           ? countryCode!.flagImage(width: 10)
+              //           : Icons.flag_circle_rounded,
+              //       hint: countryCode?.dialCode ?? 'e.g +234',
+              //     ),
+              //     validator: (value) {
+              //       if (value!.isEmpty) return '* required';
+              //       return null;
+              //     },
+              //     // onFieldSubmitted: (_) {
+              //     // FocusScope.of(context).requestFocus(_phoneFocusNode);
+              //     // },
+              //   ),
+              // ),
+              // const SizedBox(width: 10),
+
               Expanded(
                 child: TextFormField(
                   controller: _phoneController,

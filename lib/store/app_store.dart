@@ -16,6 +16,9 @@ abstract class _AppStore with Store {
   bool isLoggedIn = false;
 
   @observable
+  bool isSessionExpired = false;
+
+  @observable
   bool isDarkMode = false;
 
   @observable
@@ -62,6 +65,9 @@ abstract class _AppStore with Store {
 
   @observable
   String userContactNumber = '';
+
+  @observable
+  bool mobileVerified = false;
 
   @observable
   String userEmail = '';
@@ -131,6 +137,18 @@ abstract class _AppStore with Store {
 
   @observable
   num userWalletAmount = 0.0;
+
+  @action
+  Future<void> setSessionExpired(bool val) async {
+    isSessionExpired = val;
+  }
+
+  @action
+  Future<void> setMobileVerified(bool value,
+      {bool isInitializing = false}) async {
+    mobileVerified = value;
+    if (!isInitializing) await setValue(MOBILE_VERIFIED, value);
+  }
 
   @action
   Future<void> setUserWalletAmount() async {

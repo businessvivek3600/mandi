@@ -1,4 +1,6 @@
 import 'package:coinxfiat/constants/constants_index.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,11 +15,17 @@ import 'store/store_index.dart';
 import 'utils/utils_index.dart';
 import 'widgets/widget_index.dart';
 
+ValueNotifier<UniqueKey> restartAppKey = ValueNotifier(UniqueKey());
+
 //region Global Variables
 BaseLanguage language = LanguageEn();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await getFbToken();
   await initNbUtils().then((value) async => await initialize());
+  await NotificationSetup.initialize();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await setupAppStore();
   await initializeUserData();
   setStatusBarColor(Colors.transparent,
@@ -28,9 +36,10 @@ void main() async {
     saveErrorLog(details);
   };
 
-  runApp(const MyApp());
+  runApp(RestartAppWidget(child: const MyApp()));
 }
 
+///initialize the app with necessary services and models.
 Future<void> initNbUtils() async {
   passwordLengthGlobal = 6;
   appButtonBackgroundColorGlobal = Colors.blueGrey;
@@ -83,6 +92,8 @@ Future<void> initializeUserData() async {
     await appStore.setUserName(getStringAsync(USERNAME), isInitializing: true);
     await appStore.setContactNumber(getStringAsync(CONTACT_NUMBER),
         isInitializing: true);
+    await appStore.setMobileVerified(getBoolAsync(MOBILE_VERIFIED),
+        isInitializing: true);
     await appStore.setUserProfile(getStringAsync(PROFILE_IMAGE),
         isInitializing: true);
     await appStore.setCountryId(getIntAsync(COUNTRY_ID), isInitializing: true);
@@ -116,8 +127,28 @@ Future<void> initializeUserData() async {
 }
 
 ///MyApp
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    HandleNotification.configureSelectNotificationSubject();
+    HandleNotification.configureDidReceiveLocalNotificationSubject();
+  }
+
+  @override
+  void dispose() {
+    HandleNotification.dispose();
+    super.dispose();
+  }
+
+  final _goRouter = goRouter;
 
   @override
   Widget build(BuildContext context) {
@@ -129,25 +160,14 @@ class MyApp extends StatelessWidget {
             return Observer(
               builder: (_) => MaterialApp.router(
                   debugShowCheckedModeBanner: false,
-                  routerConfig: goRouter,
-                  // navigatorKey: navigatorKey,
-                  // home: const SplashScreen(),
+                  routerConfig: _goRouter,
                   theme: AppTheme.dynamicTheme(lightThemeSetColor),
                   darkTheme: AppTheme.dynamicTheme(darkThemeSetColor),
                   themeMode:
                       appStore.isDarkMode ? ThemeMode.dark : ThemeMode.light,
                   title: AppConst.appName,
-                  // supportedLocales: LanguageDataModel.languageLocales(),
-                  // localizationsDelegates: const [
-                  //   AppLocalizations(),
-                  //   GlobalMaterialLocalizations.delegate,
-                  //   GlobalWidgetsLocalizations.delegate,
-                  //   GlobalCupertinoLocalizations.delegate,
-                  // ],
-                  // localeResolutionCallback: (locale, supportedLocales) => locale,
-                  // locale: Locale(appStore.selectedLanguageCode),
-                  builder: (context, child) =>
-                      LoadingWidget(context: context, child: child!)),
+                  builder: (context, child) => LoadingWidget(
+                      context: context, goRouter: _goRouter, child: child!)),
             );
           },
         ),

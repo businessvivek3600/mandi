@@ -6,7 +6,7 @@ class MySvg {
 ///png images collection [MyPng]
 class MyPng {
   ///app logo
-  static const logo = 'app/logo_transaparent.png';
+  static const logo = 'app/logo.png';
   static const logoLBlack = 'app/logo_l_black.png';
   static const logoLWhite = 'app/logo_l_white.png';
   static const referandearn = 'referandearn.png';
